@@ -1,0 +1,35 @@
+{
+  "name": "qmanager-server.git",
+  "version": "1.0.0",
+  "description": "qmanager server to handle request",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quytm2239/qmanager-server.git"
+  },
+  "keywords": [
+    "qmanagerserver"
+  ],
+  "author": "quytm2239",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quytm2239/qmanager-server/issues"
+  },
+  "homepage": "https://github.com/quytm2239/qmanager-server#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "busboy": "^0.2.14",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.1",
+    "morgan": "^1.9.0",
+    "mysql2": "^1.5.2",
+    "nodemailer": "^4.4.2",
+    "password-hash": "^1.2.2",
+    "sequelize": "^4.32.7",
+    "winston": "^2.4.0"
+  }
+}
