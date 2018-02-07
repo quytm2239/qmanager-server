@@ -54,12 +54,9 @@ module.exports =
         };
         return JSONobj;
     },
-    chkObj: function (obj)
+    isNullorUndefined: function (obj)
     {
-        if ((obj === undefined || obj === null || obj.length == 0) == false) {
-    		return true;
-    	}
-    	return false;
+    	return (obj === undefined || obj === null);
     },
     hashPass: function (orginialPass)
     {

@@ -51,13 +51,13 @@ var utils = require('./utils');
 
 // Load model and sequelize
 var sequelize = require('./sequelize');
-var model = require('./model');
+var M = require('./model');
 
 app.set('super_secret', config.super_secret); // secret variable
 app.set('utils',utils);
 app.set('errcode',errcode);
 
-require('./routes')(app,config,model,sequelize,express);
+require('./routes')(app,config,M,sequelize,express);
 
 server.listen(config.PORT, function(){
   console.log('Express server listening on port ' + config.PORT);

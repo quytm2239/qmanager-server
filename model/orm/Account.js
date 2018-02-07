@@ -7,7 +7,7 @@ var Account = sequelize.define('account', {
     password: Sequelize.STRING(500),
     email: Sequelize.STRING(100),
     status: Sequelize.INTEGER(2),
-    role: Sequelize.INTEGER(2),
+    role_id: Sequelize.INTEGER(2),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 },{
