@@ -9,7 +9,7 @@ var Profile = sequelize.define('profile', {
     dob: Sequelize.STRING(50),
     phone: Sequelize.STRING(20),
     address: Sequelize.TEXT,
-    department_id: Sequelize.INTEGER(11),
+    department_id: Sequelize.INTEGER(10),
     job_title: Sequelize.STRING(100),
     join_date: Sequelize.STRING(50),
     contract_code: Sequelize.STRING(20),

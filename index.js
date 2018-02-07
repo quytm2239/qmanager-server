@@ -10,8 +10,6 @@ var winston = require('winston');
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
-// use morgan to log requests to the console
-app.use(morgan('dev'));
 
 //=========================== write log to file ================================
 var logger = new winston.Logger({
@@ -25,13 +23,13 @@ var logger = new winston.Logger({
       maxFiles:         10,
       colorize:         false
     })
-    // ,
-    // new winston.transports.Console({
-    //   level:            'debug',
-    //   handleExceptions: true,
-    //   json:             false,
-    //   colorize:         true
-    // })
+    ,
+    new winston.transports.Console({
+      level:            'debug',
+      handleExceptions: true,
+      json:             false,
+      colorize:         true
+    })
   ],
   exitOnError: false
 });
@@ -51,11 +49,15 @@ var config = require('./config');
 var errcode = require('./errcode');
 var utils = require('./utils');
 
+// Load model and sequelize
+var sequelize = require('./sequelize');
+var model = require('./model');
+
 app.set('super_secret', config.super_secret); // secret variable
 app.set('utils',utils);
 app.set('errcode',errcode);
 
-require('routes')(app,config,model,sequelize,express);
+require('./routes')(app,config,model,sequelize,express);
 
 server.listen(config.PORT, function(){
   console.log('Express server listening on port ' + config.PORT);

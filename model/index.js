@@ -2,7 +2,9 @@
 
 module.exports = {
     Account: require('./orm/Account'),
-    Log: require('./orm/Log'),
-    Member: require('./orm/Member'),
-    Plan: require('./orm/Plan')
+    Department: require('./orm/Department'),
+    Function: require('./orm/Function'),
+    Permission: require('./orm/Permission'),
+    Profile: require('./orm/Profile'),
+    Role: require('./orm/Role')
 };
