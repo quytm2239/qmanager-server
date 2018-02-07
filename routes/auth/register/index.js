@@ -1,11 +1,109 @@
 module.exports = function(app,authRouter,config,M,sequelize){
     authRouter.post('/register', function(req, res) {
 
+        if (req.decoded.account.role_id != 777) {
+            return res.status(403).send({
+                success: false,
+                message: 'Your current logged-in account is not allowed to register a new account!'
+            });
+        }
+
+        var utils = app.get('utils');
+
         var email 	 = req.body.email;
         var username = req.body.username;
         var password = req.body.password;
+        var role_id = req.body.role_id;
+
         var full_name = req.body.full_name;
         var gender 	 = req.body.gender;
+        var dob = req.body.dob;
+        var phone = req.body.phone;
+        var address = req.body.address;
+        var department_id = req.body.department_id;
+        var job_title = req.body.job_title;
+        var join_date = req.body.join_date;
+        var contract_code = req.body.contract_code;
+        var staff_code = req.body.staff_code;
+
+        if (utils.isNullorUndefined(email) || !utils.validateEmail(email))
+        return res.status(400).send({
+            success: false,
+            message: 'email is not valid!'
+        });
+
+        if (utils.isNullorUndefined(username) || username.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'username is not valid!'
+        });
+
+        if (utils.isNullorUndefined(password) || password.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'password is not valid!'
+        });
+
+        if (utils.isNullorUndefined(role_id) || isNaN(role_id))
+        return res.status(400).send({
+            success: false,
+            message: 'role_id is not valid(number)!'
+        });
+
+        // check profile's parameter
+        if (utils.isNullorUndefined(full_name) || full_name.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'full_name is not valid!'
+        });
+
+        if (utils.isNullorUndefined(gender) || isNaN(gender))
+        return res.status(400).send({
+            success: false,
+            message: 'gender is not valid(number)!'
+        });
+
+        if (utils.isNullorUndefined(dob) || dob.length == 0 || !utils.validateBirthday(dob))
+        return res.status(400).send({
+            success: false,
+            message: 'birthday is not valid!'
+        });
+
+        if (utils.isNullorUndefined(phone) || phone.length == 0 || !utils.validatePhone(phone))
+        return res.status(400).send({
+            success: false,
+            message: 'phone is not valid!'
+        });
+
+        if (utils.isNullorUndefined(address) || address.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'address is not valid!'
+        });
+
+        if (utils.isNullorUndefined(job_title) || job_title.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'job_title is not valid!'
+        });
+
+        if (utils.isNullorUndefined(join_date) || join_date.length == 0 || !utils.validateBirthday(join_date))
+        return res.status(400).send({
+            success: false,
+            message: 'join_date is not valid!'
+        });
+
+        if (utils.isNullorUndefined(contract_code) || contract_code.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'contract_code is not valid!'
+        });
+
+        if (utils.isNullorUndefined(staff_code) || staff_code.length == 0)
+        return res.status(400).send({
+            success: false,
+            message: 'staff_code is not valid!'
+        });
 
         // Check email/username
         M.Account.findOne({ where:
@@ -19,35 +117,47 @@ module.exports = function(app,authRouter,config,M,sequelize){
             if (account) {
                 res.status(400).send({
                     success: false,
-                    message: 'Username or Email already exist!'
+                    message: 'username or email already exist!'
                 });
             } else {
                 // Check full_name
                 M.Profile.findOne({ where:
                     {
-                        full_name: full_name
+                        $or: [
+                            { full_name: full_name },
+                            { phone: phone }
+                        ]
                     }
                 }).then(profile => {
-
                     if (profile) {
                         res.status(400).send({
                             success: false,
-                            message: 'Fullname already exist!'
+                            message: 'full_name or phone already exist!'
                         });
                     } else {
-                        var hashedPassword = passwordHash.generate(password);
+                        var hashedPassword = utils.hashPass(password);
 
                         sequelize.transaction(function (t) {
                             // chain all your queries here. make sure you return them.
-                            return ORM.Account.create({
+                            return M.Account.create({
                                 email: email,
                                 username: username,
-                                password: hashedPassword
+                                password: hashedPassword,
+                                status: 0,
+                                role_id: role_id
                             }, {transaction: t}).then(function (account) {
-                                return ORM.Profile.create({
+                                return M.Profile.create({
+                                    account_id: account.dataValues.id,
                                     full_name: full_name,
                                     gender: parseInt(gender),
-                                    account_id: account.dataValues.id
+                                    dob: dob,
+                                    phone: phone,
+                                    address: address,
+                                    department_id: department_id,
+                                    job_title: job_title,
+                                    join_date: join_date,
+                                    contract_code: contract_code,
+                                    staff_code: staff_code
                                 }, {transaction: t});
                             });
                         }).then(function (result) {

@@ -1,7 +1,7 @@
 module.exports = function(app,publicRouter,config,M,sequelize){
     publicRouter.post('/login',function (req, res) {
+        var jwt = require('jsonwebtoken');
         var utils = app.get('utils');
-        var passwordHash = require('password-hash');
         var username = req.body.username;
         var password = req.body.password;
         if (utils.isNullorUndefined(username) || utils.isNullorUndefined(password)) {
@@ -11,14 +11,12 @@ module.exports = function(app,publicRouter,config,M,sequelize){
             });
             return;
         }
-        var hashedPassword = passwordHash.generate(password);
         M.Account.find({
             where:{
                 username: username,
-                password: hashedPassword
             }
         }).then(account => {
-            if (account) {
+            if (account && utils.isExactPass(password,account.password)) {
                 var token = jwt.sign(
                 {
                     'account': account.dataValues,
@@ -35,7 +33,7 @@ module.exports = function(app,publicRouter,config,M,sequelize){
             } else {
                 res.status(400).send({
                     success: false,
-                    message: 'Username or password does not exist!'
+                    message: 'username or password is not true!'
                 });
             }
         });
