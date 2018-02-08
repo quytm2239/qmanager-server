@@ -4,7 +4,7 @@ module.exports = function(app,authRouter,config,M,sequelize){
         if (req.decoded.account.role_id != 777) {
             return res.status(403).send({
                 success: false,
-                message: 'Your current logged-in account is not allowed to register a new account!'
+                message: 'Your current logged-in account is not allowed to do this action!'
             });
         }
 
