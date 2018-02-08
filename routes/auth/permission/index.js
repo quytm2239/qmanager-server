@@ -1,25 +1,14 @@
-module.exports = function(app,authRouter,config,M,sequelize){
+module.exports = function(app,authRouter,config,M,sequelize,middleware){
     var errcode = app.get('errcode');
     var utils = app.get('utils');
+    var permissionEnum = app.get('enum').PERMISSION;
 
-    var middleware = function (req, res, next) {
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        } else {
-            next();
-        }
-    }
     authRouter.post('/permission', middleware, function(req, res) {
-        
-        var permissionEnum = app.get('enum').PERMISSION;
 
         var function_id = req.body.function_id;
         var deparment_id = req.body.deparment_id;
         var role_id 	 = req.body.role_id;
-        var permission = req.body.permission;
+        var permission_config = req.body.permission_config;
 
         if (utils.isNullorUndefined(function_id) || isNaN(function_id))
         return res.status(400).send({
@@ -39,16 +28,17 @@ module.exports = function(app,authRouter,config,M,sequelize){
             message: 'role_id is not valid(number)!'
         });
 
-        if (utils.isNullorUndefined(permission) || isNaN(permission) || permissionEnum.isValidPermission(permission))
+        if (utils.isNullorUndefined(permission_config) || isNaN(permission_config) || permissionEnum.isValidPermission(permission_config))
         return res.status(400).send({
             success: false,
-            message: 'permission is not valid(number, from 0 to 4)!'
+            message: 'permission_config is not valid(number, from 0 to 4)!'
         });
-
-        // Check email/username
         M.Permission.findOne({ where:
             {
-                { name: name }
+                function_id: function_id,
+                deparment_id: deparment_id,
+                role_id: role_id,
+                permission_config: permission_config
             }
         }).then(permission => {
             if (permission) {
@@ -58,15 +48,16 @@ module.exports = function(app,authRouter,config,M,sequelize){
                 });
             } else {
                 M.Permission.create({
-                    deparment_id: deparment_id,
                     function_id: function_id,
+                    deparment_id: deparment_id,
                     role_id: role_id,
-                    permission: permission
+                    permission_config: permission_config
                 }).then(function (permission) {
                     if (permission) {
                         res.status(200).send({
                             success: true,
-                            message: errcode.errorMessage(errcode.code_success);
+                            message: errcode.errorMessage(errcode.code_success),
+                            data: [permission]
                         });
                     } else {
                         res.status(500).send({
@@ -80,42 +71,26 @@ module.exports = function(app,authRouter,config,M,sequelize){
     });
     authRouter.get('/permission-by-id', middleware, function(req, res) {
 
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        }
-
-
         var id = req.body.id;
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
-            message: 'role_id is not valid(number)!'
+            message: 'permission_id is not valid(number)!'
         });
 
-        M.Permission.find({ where:
+        M.Permission.findOne({ where:
             {
-                { id: id }
+                id: id
             }
-        }).then(roles => {
+        }).then(permission => {
             res.status(200).send({
                 success: true,
-                message: errcode.errorMessage(errcode.code_success);
-                data: roles ? roles : []
+                message: errcode.errorMessage(errcode.code_success),
+                data: permission ? [permission] : []
             });
         });
     });
     authRouter.get('/permission-by-department', middleware, function(req, res) {
-
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        }
-
 
         var deparment_id = req.body.deparment_id;
 
@@ -125,66 +100,71 @@ module.exports = function(app,authRouter,config,M,sequelize){
             message: 'deparment_id is not valid(number)!'
         });
 
-        M.Permission.find({ where:
+        M.Permission.findOne({ where:
             {
-                { deparment_id: deparment_id }
+                deparment_id: deparment_id
             }
-        }).then(roles => {
+        }).then(permission => {
             res.status(200).send({
                 success: true,
-                message: errcode.errorMessage(errcode.code_success);
-                data: roles ? roles : []
+                message: errcode.errorMessage(errcode.code_success),
+                data: permission ? [permission] : []
             });
         });
     });
     authRouter.get('/all-permission', middleware, function(req, res) {
 
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        }
-
-        M.Permission.findAll().then(roles => {
+        M.Permission.findAll().then(permissions => {
             res.status(200).send({
                 success: true,
-                message: errcode.errorMessage(errcode.code_success);
-                data: roles ? roles : []
+                message: errcode.errorMessage(errcode.code_success),
+                data: permissions ? permissions : []
             });
         });
     });
-    authRouter.put('/permission', middleware, function(req, res) {
+    authRouter.put('/permission-by-id', middleware, function(req, res) {
 
+        var role_id 	   = req.body.role_id;
+        var permission_config  = req.body.permission_config;
+        var id                  = req.body.id;
 
-
-        var name 	 = req.body.name;
-        var description = req.body.description;
-
-        if (utils.isNullorUndefined(name) || name.length == 0)
+        if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
-            message: 'name is not valid!'
+            message: 'id is not valid(number)!'
         });
 
-        if (utils.isNullorUndefined(description) || description.length == 0)
+        if (utils.isNullorUndefined(role_id) || isNaN(role_id))
         return res.status(400).send({
             success: false,
-            message: 'description is not valid!'
+            message: 'role_id is not valid(number)!'
+        });
+
+        if (utils.isNullorUndefined(permission_config) || isNaN(permission_config) || permissionEnum.isValidPermission(permission_config))
+        return res.status(400).send({
+            success: false,
+            message: 'permission_config is not valid(number, from 0 to 4)!'
         });
 
         M.Permission.findOne({ where:
             {
-                { name: name }
+                id: id
             }
         }).then(permission => {
             if (permission) {
+                if (permission.permission_config == permission_config && permission.role_id == role_id) {
+                    return res.status(200).send({
+                        success: true,
+                        message: errcode.errorMessage(errcode.code_success),
+                        data: [permission]
+                    });
+                }
                 permission.update({
-                  name: name,
-                  description: description
+                  role_id: role_id,
+                  permission_config: permission_config
                 }).then(permission => {
                     return res.status(200).send({
-                        success: false,
+                        success: true,
                         message: errcode.errorMessage(errcode.code_success),
                         data: [permission]
                     });
@@ -202,35 +182,26 @@ module.exports = function(app,authRouter,config,M,sequelize){
             }
         });
     });
-    authRouter.delete('/permission', middleware, function(req, res) {
+    authRouter.delete('/permission-by-id', middleware, function(req, res) {
 
+        var id 	 = req.body.id;
 
-
-        var name 	 = req.body.name;
-        var description = req.body.description;
-
-        if (utils.isNullorUndefined(name) || name.length == 0)
+        if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
-            message: 'name is not valid!'
-        });
-
-        if (utils.isNullorUndefined(description) || description.length == 0)
-        return res.status(400).send({
-            success: false,
-            message: 'description is not valid!'
+            message: 'id is not valid!'
         });
 
         M.Permission.findOne({ where:
             {
-                { name: name }
+                id: id
             }
         }).then(permission => {
             if (permission) {
                 permission.destroy()
                 .then(() => {
                     return res.status(200).send({
-                        success: false,
+                        success: true,
                         message: errcode.errorMessage(errcode.code_success),
                     });
                 }).error(() => {

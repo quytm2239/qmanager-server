@@ -11,7 +11,7 @@ module.exports = function(app,publicRouter,config,M,sequelize){
             });
             return;
         }
-        M.Account.find({
+        M.Account.findOne({
             where:{
                 username: username,
             }

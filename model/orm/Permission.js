@@ -6,7 +6,7 @@ var Permission = sequelize.define('permission', {
     function_id: Sequelize.INTEGER(10),
     role_id: Sequelize.INTEGER(10),
     department_id: Sequelize.INTEGER(10),
-    permission: Sequelize.INTEGER(4),
+    permission_config: Sequelize.INTEGER(4),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE
 },{

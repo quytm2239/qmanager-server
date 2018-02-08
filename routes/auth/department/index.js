@@ -1,14 +1,7 @@
-module.exports = function(app,authRouter,config,M,sequelize){
-    authRouter.post('/deparment', function(req, res) {
+module.exports = function(app,authRouter,config,M,sequelize,middleware){
+    var utils = app.get('utils');
 
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        }
-
-        var utils = app.get('utils');
+    authRouter.post('/deparment', middleware, function(req, res) {
 
         var name 	 = req.body.name;
         var description = req.body.description;
@@ -28,7 +21,7 @@ module.exports = function(app,authRouter,config,M,sequelize){
         // Check email/username
         M.Department.findOne({ where:
             {
-                { name: name }
+                name: name
             }
         }).then(department => {
             if (department) {
@@ -44,7 +37,7 @@ module.exports = function(app,authRouter,config,M,sequelize){
                     if (department) {
                         res.status(200).send({
                             success: true,
-                            message: 'Successfully!';
+                            message: 'Successfully!'
                         });
                     } else {
                         res.status(500).send({

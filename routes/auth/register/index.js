@@ -1,14 +1,8 @@
-module.exports = function(app,authRouter,config,M,sequelize){
-    authRouter.post('/register', function(req, res) {
+module.exports = function(app,authRouter,config,M,sequelize,middleware){
 
-        if (req.decoded.account.role_id != 777) {
-            return res.status(403).send({
-                success: false,
-                message: 'Your current logged-in account is not allowed to do this action!'
-            });
-        }
+    var utils = app.get('utils');
 
-        var utils = app.get('utils');
+    authRouter.post('/register', middleware, function(req, res) {
 
         var email 	 = req.body.email;
         var username = req.body.username;
