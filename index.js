@@ -48,7 +48,7 @@ app.use(morgan(
 var config = require('./config');
 var errcode = require('./errcode');
 var utils = require('./utils');
-var enum = require('./enum');
+var enums = require('./enums');
 
 // Load model and sequelize
 var sequelize = require('./sequelize');
@@ -57,7 +57,7 @@ var M = require('./model');
 app.set('super_secret', config.super_secret); // secret variable
 app.set('utils',utils);
 app.set('errcode',errcode);
-app.set('enum',enum);
+app.set('enums',enums);
 
 require('./routes')(app,config,M,sequelize,express);
 

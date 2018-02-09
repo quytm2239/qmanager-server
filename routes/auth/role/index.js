@@ -60,7 +60,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.get('/role-by-id', middleware, function(req, res) {
 
-        var id = req.body.id;
+        var id = req.query.id;
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
@@ -81,7 +81,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.get('/role-by-department', middleware, function(req, res) {
 
-        var deparment_id = req.body.deparment_id;
+        var deparment_id = req.query.deparment_id;
 
         if (utils.isNullorUndefined(deparment_id) || isNaN(deparment_id))
         return res.status(400).send({
@@ -166,7 +166,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/role-by-name', middleware, function(req, res) {
 
-        var name 	 = req.body.name;
+        var name 	 = req.query.name;
 
         if (utils.isNullorUndefined(name) || name.length == 0)
         return res.status(400).send({
@@ -202,7 +202,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/role-by-id', middleware, function(req, res) {
 
-        var id 	 = req.body.id;
+        var id 	 = req.query.id;
 
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({

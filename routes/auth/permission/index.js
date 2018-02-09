@@ -1,7 +1,7 @@
 module.exports = function(app,authRouter,config,M,sequelize,middleware){
     var errcode = app.get('errcode');
     var utils = app.get('utils');
-    var permissionEnum = app.get('enum').PERMISSION;
+    var permissionEnum = app.get('enums').PERMISSION;
 
     authRouter.post('/permission', middleware, function(req, res) {
 
@@ -71,7 +71,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.get('/permission-by-id', middleware, function(req, res) {
 
-        var id = req.body.id;
+        var id = req.query.id;
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
@@ -92,7 +92,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.get('/permission-by-department', middleware, function(req, res) {
 
-        var deparment_id = req.body.deparment_id;
+        var deparment_id = req.query.deparment_id;
 
         if (utils.isNullorUndefined(deparment_id) || isNaN(deparment_id))
         return res.status(400).send({
@@ -184,7 +184,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/permission-by-id', middleware, function(req, res) {
 
-        var id 	 = req.body.id;
+        var id 	 = req.query.id;
 
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({

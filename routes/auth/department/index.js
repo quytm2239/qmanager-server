@@ -49,4 +49,37 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             }
         });
     });
+
+    authRouter.get('/deparment-by-id', middleware, function(req, res) {
+
+        var id 	 = req.query.id;
+        if (utils.isNullorUndefined(id) || isNaN(id))
+        return res.status(400).send({
+            success: false,
+            message: 'id is not valid!'
+        });
+
+        M.Department.findOne({ where:
+            {
+                id: id
+            }
+        }).then(department => {
+            res.status(200).send({
+                success: true,
+                message: 'Successfully!',
+                data: department ? [department] : []
+            });
+        });
+    });
+
+    authRouter.get('/all-deparment', middleware, function(req, res) {
+
+        M.Department.findAll().then(departments => {
+            res.status(200).send({
+                success: true,
+                message: 'Successfully!',
+                data: departments ? departments : []
+            });
+        });
+    });
 };
