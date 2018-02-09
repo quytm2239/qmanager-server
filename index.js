@@ -64,3 +64,16 @@ require('./routes')(app,config,M,sequelize,express);
 server.listen(config.PORT, function(){
   console.log('Express server listening on port ' + config.PORT);
 });
+
+// MONITOR app
+var probe = require('pmx').probe();
+var counter = 0;
+var metric = probe.metric({
+  name    : 'Realtime user',
+  value   : function() {
+    return counter;
+  }
+});
+setInterval(function() {
+  counter++;
+}, 100);

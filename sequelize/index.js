@@ -1,7 +1,8 @@
 var Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('sale_manager', 'sale', '123456', {
-  host: '35.201.228.124',
+  // host: '35.201.228.124',
+  host: 'localhost',
   port: 3306,
   dialect: 'mysql',
   logging: false,
