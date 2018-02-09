@@ -72,7 +72,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         });
     });
 
-    authRouter.get('/all-deparment', middleware, function(req, res) {
+    authRouter.get('/all-department', middleware, function(req, res) {
 
         M.Department.findAll().then(departments => {
             res.status(200).send({

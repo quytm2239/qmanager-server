@@ -16,7 +16,7 @@ module.exports = function(req, res, next) {
         jwt.verify(token, config.super_secret, function(err, decoded) {
             if (err) {
                 return res.status(400).send({
-                    status: 4031,
+                    success: false,
                     message: 'Token is not valid!',
 					data: []
                 });
@@ -29,7 +29,7 @@ module.exports = function(req, res, next) {
         });
     } else {
         return res.status(403).send({
-            status: 403,
+            success: false,
             message: 'No token provided.',
 			data: []
         });
