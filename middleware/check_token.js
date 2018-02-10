@@ -15,7 +15,7 @@ module.exports = function(req, res, next) {
         // verifies secret and checks exp
         jwt.verify(token, config.super_secret, function(err, decoded) {
             if (err) {
-                return res.status(400).send({
+                return res.status(403).send({
                     success: false,
                     message: 'Token is not valid!',
 					data: []
