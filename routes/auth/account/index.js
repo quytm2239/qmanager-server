@@ -1,6 +1,7 @@
 module.exports = function(app,authRouter,config,M,sequelize,middleware){
 
     var utils = app.get('utils');
+    var errcode = app.get('errcode');
     var accountStatusEnum = app.get('enums').ACCOUNT_STATUS;
 
     authRouter.post('/add-member', middleware, function(req, res) {
@@ -158,10 +159,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                         }).then(function (result) {
                         // Transaction has been committed
                         // result is whatever the result of the promise chain returned to the transaction callback
-                            res.status(200).send({
-                                success: true,
-                                message: 'Register successfully!'
-                            });
+                            res.status(200).send(
+                                utils.response(
+                                    true
+                                    ,errcode.errorMessage(errcode.code_success)
+                                    ,accounts ? accounts : []
+                                )
+                            );
                         }).catch(function (err) {
                         // Transaction has been rolled back
                         // err is whatever rejected the promise chain returned to the transaction callback
@@ -188,5 +192,17 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         //   console.log(account) // ... in order to get the array of user objects
         //   res.redirect('/login');
         // })
+    });
+
+    authRouter.get('/pending-account', middleware, function(req, res) {
+        M.Account.findAll().then(accounts => {
+            res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,accounts ? accounts : []
+                )
+            );
+        });
     });
 };

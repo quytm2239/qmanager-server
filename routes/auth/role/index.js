@@ -44,10 +44,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                     description: description
                 }).then(function (role) {
                     if (role) {
-                        res.status(200).send({
-                            success: true,
-                            message: errcode.errorMessage(errcode.code_success)
-                        });
+                        return res.status(200).send(
+                            utils.response(
+                                true
+                                ,errcode.errorMessage(errcode.code_success)
+                                ,[role]
+                            )
+                        );
                     } else {
                         res.status(500).send({
                             success: false,
@@ -71,12 +74,14 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             {
                 id: id
             }
-        }).then(roles => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: roles ? roles : []
-            });
+        }).then(role => {
+            return res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,role ? [role] : role
+                )
+            );
         });
     });
     authRouter.get('/role-by-department', middleware, function(req, res) {
@@ -93,22 +98,25 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             {
                 deparment_id: deparment_id
             }
-        }).then(roles => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: roles ? roles : []
-            });
+        }).then(role => {
+            return res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,role ? [role] : role
+                )
+            );
         });
     });
     authRouter.get('/all-role', middleware, function(req, res) {
-
         M.Role.findAll().then(roles => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: roles ? roles : []
-            });
+            return res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,roles ? roles : []
+                )
+            );
         });
     });
     authRouter.put('/role-by-id', middleware, function(req, res) {
@@ -145,11 +153,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                   name: name,
                   description: description
                 }).then(role => {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                        data: [role]
-                    });
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,role ? [role] : []
+                        )
+                    );
                 }).error(() => {
                     return res.status(500).send({
                         success: false,
@@ -182,10 +192,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             if (role) {
                 role.destroy()
                 .then(() => {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                    });
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,[]
+                        )
+                    );
                 }).error(() => {
                     return res.status(500).send({
                         success: false,
@@ -218,10 +231,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             if (role) {
                 role.destroy()
                 .then(() => {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                    });
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,[]
+                        )
+                    );
                 }).error(() => {
                     return res.status(500).send({
                         success: false,

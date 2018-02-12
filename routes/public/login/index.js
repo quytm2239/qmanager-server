@@ -36,7 +36,7 @@ module.exports = function(app,publicRouter,config,M,sequelize){
                 });
                 res.status(200).send({
                     success: true,
-                    message: 'ok',
+                    message: errcode.errorMessage(errcode.code_success),
                     token: token
                 });
             } else {

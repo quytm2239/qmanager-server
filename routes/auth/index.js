@@ -10,7 +10,7 @@ module.exports = function(app,authRouter,config,M,sequelize){
             next();
         }
     };
-    require('./add-member')(app,authRouter,config,M,sequelize,middleware);
+    require('./account')(app,authRouter,config,M,sequelize,middleware);
     require('./department')(app,authRouter,config,M,sequelize,middleware);
     require('./role')(app,authRouter,config,M,sequelize,middleware);
     require('./permission')(app,authRouter,config,M,sequelize,middleware);

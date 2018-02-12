@@ -45,6 +45,15 @@ module.exports =
     	};
     	return JSONobj;
     },
+    response: function (status,message,data)
+    {
+        var JSONobj = {
+            status: code,
+            message: message,
+            data: data
+        };
+        return JSONobj;
+    },
     responsePhotos: function (code,message,photos)
     {
         var JSONobj = {

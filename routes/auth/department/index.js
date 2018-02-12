@@ -1,6 +1,7 @@
 module.exports = function(app,authRouter,config,M,sequelize,middleware){
     var utils = app.get('utils');
-
+    var errcode = app.get('errcode');
+    
     authRouter.post('/deparment', middleware, function(req, res) {
 
         var name 	 = req.body.name;
@@ -35,10 +36,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                     description: description
                 }).then(function (department) {
                     if (department) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Successfully!'
-                        });
+                        res.status(200).send(
+                            utils.response(
+                                true
+                                ,errcode.errorMessage(errcode.code_success)
+                                ,[department]
+                            )
+                        );
                     } else {
                         res.status(500).send({
                             success: false,
@@ -64,11 +68,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                 id: id
             }
         }).then(department => {
-            res.status(200).send({
-                success: true,
-                message: 'Successfully!',
-                data: department ? [department] : []
-            });
+            res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,department ? department : []
+                )
+            );
         });
     });
 

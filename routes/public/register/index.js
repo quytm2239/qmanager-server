@@ -158,10 +158,13 @@ module.exports = function(app,publicRouter,config,M,sequelize){
                         }).then(function (result) {
                         // Transaction has been committed
                         // result is whatever the result of the promise chain returned to the transaction callback
-                            res.status(200).send({
-                                success: true,
-                                message: 'Register successfully!'
-                            });
+                            return res.status(200).send(
+                                utils.response(
+                                    true
+                                    ,errcode.errorMessage(errcode.code_success)
+                                    ,[]
+                                )
+                            );
                         }).catch(function (err) {
                         // Transaction has been rolled back
                         // err is whatever rejected the promise chain returned to the transaction callback

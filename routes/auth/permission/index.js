@@ -54,11 +54,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                     permission_config: permission_config
                 }).then(function (permission) {
                     if (permission) {
-                        res.status(200).send({
-                            success: true,
-                            message: errcode.errorMessage(errcode.code_success),
-                            data: [permission]
-                        });
+                        res.status(200).send(
+                            utils.response(
+                                true
+                                ,errcode.errorMessage(errcode.code_success)
+                                ,permission ? permission : []
+                            )
+                        );
                     } else {
                         res.status(500).send({
                             success: false,
@@ -83,11 +85,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                 id: id
             }
         }).then(permission => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: permission ? [permission] : []
-            });
+            res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,permission ? permission : []
+                )
+            );
         });
     });
     authRouter.get('/permission-by-department', middleware, function(req, res) {
@@ -105,21 +109,25 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                 deparment_id: deparment_id
             }
         }).then(permission => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: permission ? [permission] : []
-            });
+            res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,permission ? permission : []
+                )
+            );
         });
     });
     authRouter.get('/all-permission', middleware, function(req, res) {
 
         M.Permission.findAll().then(permissions => {
-            res.status(200).send({
-                success: true,
-                message: errcode.errorMessage(errcode.code_success),
-                data: permissions ? permissions : []
-            });
+            res.status(200).send(
+                utils.response(
+                    true
+                    ,errcode.errorMessage(errcode.code_success)
+                    ,permissions ? permissions : []
+                )
+            );
         });
     });
     authRouter.put('/permission-by-id', middleware, function(req, res) {
@@ -153,21 +161,26 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         }).then(permission => {
             if (permission) {
                 if (permission.permission_config == permission_config && permission.role_id == role_id) {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                        data: [permission]
-                    });
+                    // Dont need update
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,permission ? [permission] : []
+                        )
+                    );
                 }
                 permission.update({
                   role_id: role_id,
                   permission_config: permission_config
                 }).then(permission => {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                        data: [permission]
-                    });
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,permission ? [permission] : []
+                        )
+                    );
                 }).error(() => {
                     return res.status(500).send({
                         success: false,
@@ -200,10 +213,13 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
             if (permission) {
                 permission.destroy()
                 .then(() => {
-                    return res.status(200).send({
-                        success: true,
-                        message: errcode.errorMessage(errcode.code_success),
-                    });
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,[]
+                        )
+                    );
                 }).error(() => {
                     return res.status(500).send({
                         success: false,
