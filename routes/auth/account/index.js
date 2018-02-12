@@ -193,7 +193,6 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         //   res.redirect('/login');
         // })
     });
-
     authRouter.get('/pending-account', middleware, function(req, res) {
         M.Account.findAll().then(accounts => {
             res.status(200).send(
@@ -203,6 +202,102 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                     ,accounts ? accounts : []
                 )
             );
+        });
+    });
+    authRouter.post('/approve-account', middleware, function(req, res) {
+
+        var id = req.body.id;
+
+        if (utils.isNullorUndefined(id) || isNaN(id))
+        return res.status(400).send({
+            success: false,
+            message: 'id is not valid(number)!'
+        });
+
+        M.Acount.findOne({ where:
+            {
+                id: id
+            }
+        }).then(account => {
+            if (account) {
+                account.update({
+                  status: accountStatusEnum.NORMAL,
+                }).then(account => {
+                    return res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,account ? [account] : []
+                        )
+                    );
+                }).error(() => {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Internal error!'
+                    });
+                });
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: 'This account does not exist!'
+                });
+            }
+        });
+    });
+    authRouter.delete('/account-by-id', middleware, function(req, res) {
+
+        var account_id 	 = req.query.id;
+
+        if (utils.isNullorUndefined(id) || isNaN(id))
+        return res.status(400).send({
+            success: false,
+            message: 'account_id is not valid!'
+        });
+
+        M.Account.findOne({ where:
+            {
+                id: account_id
+            }
+        }).then(account => {
+            if (account) {
+                sequelize.transaction(function (t) {
+                    // chain all your queries here. make sure you return them.
+                    return M.Account.destroy({
+                        where: { id: account_id }
+                    }, {transaction: t}).then(() => {
+                        return M.Profile.destroy({
+                            where: { account_id: account_id }
+                        }, {transaction: t});
+                    }).catch(function (err) {
+                        res.status(500).send({
+                            success: false,
+                            message: 'Something went wrong, please try again!'
+                        });
+                    });
+                }).then(function (result) {
+                // Transaction has been committed
+                // result is whatever the result of the promise chain returned to the transaction callback
+                    res.status(200).send(
+                        utils.response(
+                            true
+                            ,errcode.errorMessage(errcode.code_success)
+                            ,accounts ? accounts : []
+                        )
+                    );
+                }).catch(function (err) {
+                // Transaction has been rolled back
+                // err is whatever rejected the promise chain returned to the transaction callback
+                    res.status(500).send({
+                        success: false,
+                        message: 'Something went wrong, please try again!'
+                    });
+                });
+            } else {
+                res.status(400).send({
+                    success: false,
+                    message: 'This account does not exist!'
+                });
+            }
         });
     });
 };
