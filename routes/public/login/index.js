@@ -1,4 +1,5 @@
 module.exports = function(app,publicRouter,config,M,sequelize){
+    var errcode = app.get('errcode');
     publicRouter.post('/login',function (req, res) {
         var jwt = require('jsonwebtoken');
         var utils = app.get('utils');
