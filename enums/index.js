@@ -7,11 +7,11 @@ module.exports = {
         VIEW_INSERT_UPDATE_DELETE   : 4,
         isValidPermission: function(enteredPermission) {
             switch (enteredPermission) {
-                case module.exports.ROLE.ACCESS_DENIED:
-                case module.exports.ROLE.VIEW:
-                case module.exports.ROLE.VIEW_INSERT:
-                case module.exports.ROLE.VIEW_INSERT_UPDATE:
-                case module.exports.ROLE.VIEW_INSERT_UPDATE_DELETE:
+                case module.exports.PERMISSION.ACCESS_DENIED:
+                case module.exports.PERMISSION.VIEW:
+                case module.exports.PERMISSION.VIEW_INSERT:
+                case module.exports.PERMISSION.VIEW_INSERT_UPDATE:
+                case module.exports.PERMISSION.VIEW_INSERT_UPDATE_DELETE:
                     return true;
                     break;
                 default:
