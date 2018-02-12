@@ -246,17 +246,17 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/account-by-id', middleware, function(req, res) {
 
-        var account_id 	 = req.query.id;
+        var id 	 = req.body.id;
 
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
             success: false,
-            message: 'account_id is not valid!'
+            message: 'id is not valid!'
         });
 
         M.Account.findOne({ where:
             {
-                id: account_id
+                id: id
             }
         }).then(account => {
             if (account) {

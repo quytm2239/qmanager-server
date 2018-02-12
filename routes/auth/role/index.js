@@ -176,7 +176,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/role-by-name', middleware, function(req, res) {
 
-        var name 	 = req.query.name;
+        var name 	 = req.body.name;
 
         if (utils.isNullorUndefined(name) || name.length == 0)
         return res.status(400).send({
@@ -215,7 +215,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/role-by-id', middleware, function(req, res) {
 
-        var id 	 = req.query.id;
+        var id 	 = req.body.id;
 
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({

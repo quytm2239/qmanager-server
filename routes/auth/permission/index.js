@@ -197,7 +197,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
     });
     authRouter.delete('/permission-by-id', middleware, function(req, res) {
 
-        var id 	 = req.query.id;
+        var id 	 = req.body.id;
 
         if (utils.isNullorUndefined(id) || isNaN(id))
         return res.status(400).send({
