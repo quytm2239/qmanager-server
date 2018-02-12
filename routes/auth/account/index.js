@@ -163,7 +163,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                                 utils.response(
                                     true
                                     ,errcode.errorMessage(errcode.code_success)
-                                    ,accounts ? accounts : []
+                                    ,[]
                                 )
                             );
                         }).catch(function (err) {
