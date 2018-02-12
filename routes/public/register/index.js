@@ -1,8 +1,9 @@
-module.exports = function(app,authRouter,config,M,sequelize,middleware){
+module.exports = function(app,publicRouter,config,M,sequelize){
 
     var utils = app.get('utils');
+    var accountStatusEnum = app.get('enums').ACCOUNT_STATUS;
 
-    authRouter.post('/register', middleware, function(req, res) {
+    publicRouter.post('/register', function(req, res) {
 
         var email 	 = req.body.email;
         var username = req.body.username;
@@ -137,7 +138,7 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                                 email: email,
                                 username: username,
                                 password: hashedPassword,
-                                status: 0,
+                                status: accountStatusEnum.NEED_APPROVAL,
                                 role_id: role_id
                             }, {transaction: t}).then(function (account) {
                                 return M.Profile.create({

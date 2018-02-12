@@ -18,5 +18,19 @@ module.exports = {
                 return false;
             }
         }
+    },
+    ACCOUNT_STATUS: {
+        NORMAL: 0,
+        NEED_APPROVAL: 1,
+        isValidAccountStatus: function(enteredAccountStatus) {
+            switch (enteredAccountStatus) {
+                case module.exports.ACCOUNT_STATUS.NORMAL:
+                case module.exports.ACCOUNT_STATUS.NEED_APPROVAL:
+                    return true;
+                    break;
+                default:
+                return false;
+            }
+        }
     }
 };

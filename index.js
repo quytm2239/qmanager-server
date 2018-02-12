@@ -49,6 +49,7 @@ var config = require('./config');
 var errcode = require('./errcode');
 var utils = require('./utils');
 var enums = require('./enums');
+var constants = require('./constants');
 
 // Load model and sequelize
 var sequelize = require('./sequelize');
@@ -58,6 +59,7 @@ app.set('super_secret', config.super_secret); // secret variable
 app.set('utils',utils);
 app.set('errcode',errcode);
 app.set('enums',enums);
+app.set('constants',constants);
 
 require('./routes')(app,config,M,sequelize,express);
 
