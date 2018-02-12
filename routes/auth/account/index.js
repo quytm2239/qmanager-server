@@ -194,7 +194,11 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         // })
     });
     authRouter.get('/pending-account', middleware, function(req, res) {
-        M.Account.findAll().then(accounts => {
+        M.Account.findAll({
+            where : {
+                status: accountStatusEnum.NEED_APPROVAL
+            }
+        }).then(accounts => {
             res.status(200).send(
                 utils.response(
                     true
@@ -263,33 +267,32 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
                 sequelize.transaction(function (t) {
                     // chain all your queries here. make sure you return them.
                     return M.Account.destroy({
-                        where: { id: account_id }
-                    }, {transaction: t}).then(() => {
+                        where: { id: id }
+                    }, {transaction: t}
+                    ).then(function (result) {
                         return M.Profile.destroy({
-                            where: { account_id: account_id }
+                            where: { account_id: id }
                         }, {transaction: t});
                     }).catch(function (err) {
                         res.status(500).send({
                             success: false,
-                            message: 'Something went wrong, please try again!'
+                            message: err
                         });
                     });
                 }).then(function (result) {
                 // Transaction has been committed
                 // result is whatever the result of the promise chain returned to the transaction callback
-                    res.status(200).send(
-                        utils.response(
-                            true
-                            ,errcode.errorMessage(errcode.code_success)
-                            ,accounts ? accounts : []
-                        )
-                    );
+                    console.log(result);
+                    res.status(200).send({
+                        success: true,
+                        message: 'Successfully!'
+                    });
                 }).catch(function (err) {
                 // Transaction has been rolled back
                 // err is whatever rejected the promise chain returned to the transaction callback
                     res.status(500).send({
                         success: false,
-                        message: 'Something went wrong, please try again!'
+                        message: err
                     });
                 });
             } else {

@@ -48,7 +48,7 @@ module.exports =
     response: function (status,message,data)
     {
         var JSONobj = {
-            status: code,
+            status: status,
             message: message,
             data: data
         };
