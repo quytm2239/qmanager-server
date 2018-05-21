@@ -25,7 +25,8 @@ module.exports = function(app,authRouter,config,M,sequelize,middleware){
         if (utils.isNullorUndefined(email) || !utils.validateEmail(email))
         return res.status(400).send({
             success: false,
-            message: 'email is not valid!'
+            message: '',
+            error_code: errcode.ACCOUNT.invalid_email
         });
 
         if (utils.isNullorUndefined(username) || username.length == 0)
